@@ -4,12 +4,22 @@
  */
 package veiculoslucaserick.Views;
 
-/**
- *
- * @author Lucas
- */
+import java.awt.Color;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import javax.swing.JOptionPane;
+import java.sql.SQLException;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+
+import veiculoslucaserick.Model.AutomovelModel;
+import veiculoslucaserick.Controller.AutomovelController;
+
 public class frCadastrarAutomovel extends javax.swing.JFrame {
-    
+
+    private byte[] imagemSelecionada;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frCadastrarAutomovel.class.getName());
 
     /**
@@ -18,9 +28,8 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
     public frCadastrarAutomovel() {
         initComponents();
         jComboBoxIDMarca.setRenderer(new PromptComboBoxRenderer("Código da Marca"));
-        jComboBoxIDMarca.setSelectedIndex(-1); 
+        jComboBoxIDMarca.setSelectedIndex(-1);
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -34,16 +43,16 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jTextFieldIDVeiculo = new javax.swing.JTextField();
-        JTextFieldModelo = new javax.swing.JTextField();
-        jTextFieldValorVeiculo = new javax.swing.JTextField();
+        jTextFieldModelo = new javax.swing.JTextField();
+        jTextFieldValor = new javax.swing.JTextField();
         jTextFieldAnoFabricacao = new javax.swing.JTextField();
         jComboBoxIDMarca = new javax.swing.JComboBox<>();
         JTextFieldMostrarIDVeiculo = new javax.swing.JTextField();
         jTextFieldCorVeiculo = new javax.swing.JTextField();
-        jTextFieldOpcional = new javax.swing.JTextField();
+        jTextFieldOpcionais = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jPanelImagemVeiculo = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        jLabelMostrarImagem = new javax.swing.JLabel();
         jButtonInserirFotoVeiculo = new javax.swing.JButton();
         jTextFieldNomeImagemVeiculo = new javax.swing.JTextField();
         jButtonInserir = new javax.swing.JButton();
@@ -53,27 +62,81 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
         jButtonExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
+        jTextFieldIDVeiculo.setEditable(false);
         jTextFieldIDVeiculo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextFieldIDVeiculo.setText("ID ");
+        jTextFieldIDVeiculo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldIDVeiculoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldIDVeiculoFocusLost(evt);
+            }
+        });
 
-        JTextFieldModelo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        JTextFieldModelo.setText("Modelo");
+        jTextFieldModelo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTextFieldModelo.setText("Modelo");
+        jTextFieldModelo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldModeloFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldModeloFocusLost(evt);
+            }
+        });
 
-        jTextFieldValorVeiculo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jTextFieldValorVeiculo.setText("Valor (R$)");
+        jTextFieldValor.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTextFieldValor.setText("Valor (R$)");
+        jTextFieldValor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldValorFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldValorFocusLost(evt);
+            }
+        });
 
         jTextFieldAnoFabricacao.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextFieldAnoFabricacao.setText("Ano");
+        jTextFieldAnoFabricacao.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldAnoFabricacaoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldAnoFabricacaoFocusLost(evt);
+            }
+        });
 
         jComboBoxIDMarca.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jComboBoxIDMarca.addActionListener(this::jComboBoxIDMarcaActionPerformed);
 
         jTextFieldCorVeiculo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextFieldCorVeiculo.setText("Cor");
+        jTextFieldCorVeiculo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldCorVeiculoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldCorVeiculoFocusLost(evt);
+            }
+        });
 
-        jTextFieldOpcional.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jTextFieldOpcional.setText("Opcional");
+        jTextFieldOpcionais.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTextFieldOpcionais.setText("Opcionais");
+        jTextFieldOpcionais.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldOpcionaisFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldOpcionaisFocusLost(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setText("Foto do Veículo");
@@ -86,22 +149,24 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
             jPanelImagemVeiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelImagemVeiculoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                .addComponent(jLabelMostrarImagem, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanelImagemVeiculoLayout.setVerticalGroup(
             jPanelImagemVeiculoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelImagemVeiculoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addComponent(jLabelMostrarImagem, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jButtonInserirFotoVeiculo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonInserirFotoVeiculo.setText("...");
+        jButtonInserirFotoVeiculo.addActionListener(this::jButtonInserirFotoVeiculoActionPerformed);
 
         jButtonInserir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonInserir.setText("Inserir");
+        jButtonInserir.addActionListener(this::jButtonInserirActionPerformed);
 
         jButtonLimpar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonLimpar.setText("Limpar");
@@ -129,10 +194,10 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(JTextFieldMostrarIDVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 29, Short.MAX_VALUE))
                         .addComponent(jTextFieldIDVeiculo)
-                        .addComponent(JTextFieldModelo)
-                        .addComponent(jTextFieldValorVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldModelo)
+                        .addComponent(jTextFieldValor, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jTextFieldAnoFabricacao, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextFieldOpcional))
+                        .addComponent(jTextFieldOpcionais))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jButtonInserir)
@@ -169,19 +234,19 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(JTextFieldModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jComboBoxIDMarca)
                             .addComponent(JTextFieldMostrarIDVeiculo))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldValorVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldAnoFabricacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldCorVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldOpcional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextFieldOpcionais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButtonInserir)
@@ -235,6 +300,148 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxIDMarcaActionPerformed
 
+    private void jTextFieldIDVeiculoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldIDVeiculoFocusGained
+        if (jTextFieldIDVeiculo.getText().trim().equals("ID")) {
+            jTextFieldIDVeiculo.setText("");
+            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        }
+    }//GEN-LAST:event_jTextFieldIDVeiculoFocusGained
+    private void jTextFieldIDVeiculoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldIDVeiculoFocusLost
+        if (jTextFieldIDVeiculo.getText().isEmpty()) {
+            jTextFieldIDVeiculo.setText("ID");
+            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        }
+    }//GEN-LAST:event_jTextFieldIDVeiculoFocusLost
+    private void jTextFieldModeloFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldModeloFocusGained
+        if (jTextFieldIDVeiculo.getText().trim().equals("Modelo")) {
+            jTextFieldIDVeiculo.setText("");
+            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        }
+    }//GEN-LAST:event_jTextFieldModeloFocusGained
+    private void jTextFieldModeloFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldModeloFocusLost
+        if (jTextFieldIDVeiculo.getText().isEmpty()) {
+            jTextFieldIDVeiculo.setText("Modelo");
+            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        }
+    }//GEN-LAST:event_jTextFieldModeloFocusLost
+    private void jTextFieldValorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldValorFocusGained
+        if (jTextFieldIDVeiculo.getText().trim().equals("Valor (R$)")) {
+            jTextFieldIDVeiculo.setText("");
+            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        }
+    }//GEN-LAST:event_jTextFieldValorFocusGained
+    private void jTextFieldValorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldValorFocusLost
+        if (jTextFieldIDVeiculo.getText().isEmpty()) {
+            jTextFieldIDVeiculo.setText("Valor (R$)");
+            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        }
+    }//GEN-LAST:event_jTextFieldValorFocusLost
+    private void jTextFieldAnoFabricacaoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldAnoFabricacaoFocusGained
+        if (jTextFieldIDVeiculo.getText().trim().equals("Ano")) {
+            jTextFieldIDVeiculo.setText("");
+            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        }
+    }//GEN-LAST:event_jTextFieldAnoFabricacaoFocusGained
+    private void jTextFieldAnoFabricacaoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldAnoFabricacaoFocusLost
+        if (jTextFieldIDVeiculo.getText().isEmpty()) {
+            jTextFieldIDVeiculo.setText("Ano");
+            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        }
+    }//GEN-LAST:event_jTextFieldAnoFabricacaoFocusLost
+    private void jTextFieldCorVeiculoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldCorVeiculoFocusGained
+        if (jTextFieldIDVeiculo.getText().trim().equals("Cor")) {
+            jTextFieldIDVeiculo.setText("");
+            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        }
+    }//GEN-LAST:event_jTextFieldCorVeiculoFocusGained
+    private void jTextFieldCorVeiculoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldCorVeiculoFocusLost
+        if (jTextFieldIDVeiculo.getText().isEmpty()) {
+            jTextFieldIDVeiculo.setText("Cor");
+            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        }
+    }//GEN-LAST:event_jTextFieldCorVeiculoFocusLost
+    private void jTextFieldOpcionaisFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldOpcionaisFocusGained
+        if (jTextFieldIDVeiculo.getText().trim().equals("Opcionais")) {
+            jTextFieldIDVeiculo.setText("");
+            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        }
+    }//GEN-LAST:event_jTextFieldOpcionaisFocusGained
+    private void jTextFieldOpcionaisFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldOpcionaisFocusLost
+        if (jTextFieldIDVeiculo.getText().isEmpty()) {
+            jTextFieldIDVeiculo.setText("Opcionais");
+            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        }
+    }//GEN-LAST:event_jTextFieldOpcionaisFocusLost
+
+    private void jButtonInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInserirActionPerformed
+        try {
+            AutomovelModel automovel = new AutomovelModel();
+
+            automovel.setModelo(jTextFieldModelo.getText());
+            automovel.setValor(Float.parseFloat(jTextFieldValor.getText()));
+            automovel.setAno(Integer.parseInt(jTextFieldAnoFabricacao.getText()));
+            automovel.setCor(jTextFieldCorVeiculo.getText());
+            automovel.setOpcionais(jTextFieldOpcionais.getText());
+
+            if (imagemSelecionada == null) {
+                JOptionPane.showMessageDialog(this, "Selecione uma imagem!");
+                return;
+            }
+
+            automovel.setImagem(imagemSelecionada);
+            
+            automovel.setIdMarca(
+                Integer.parseInt(jComboBoxIDMarca.getSelectedItem().toString())
+            );
+            
+            AutomovelController controller = new AutomovelController();
+            controller.inserirModelo(automovel);
+
+            JOptionPane.showMessageDialog(
+                this, "Automóvel cadastrado com sucesso!"
+            );
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(
+                this, "Verifique os campos numéricos!"
+            );
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(
+                this, "Erro ao inserir: " + ex.getMessage()
+            );
+        }
+
+    }//GEN-LAST:event_jButtonInserirActionPerformed
+
+    private void jButtonInserirFotoVeiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInserirFotoVeiculoActionPerformed
+        JFileChooser chooser = new JFileChooser();
+
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                File arquivo = chooser.getSelectedFile();
+
+                imagemSelecionada = Files.readAllBytes(arquivo.toPath());
+                ImageIcon icon = new ImageIcon(imagemSelecionada);
+
+                Image imagem = icon.getImage().getScaledInstance(
+                    jLabelMostrarImagem.getWidth(),
+                    jLabelMostrarImagem.getHeight(),
+                    Image.SCALE_SMOOTH
+                );
+
+                jLabelMostrarImagem.setIcon(new ImageIcon(imagem));
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jButtonInserirFotoVeiculoActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        
+    }//GEN-LAST:event_formWindowOpened
+
     /**
      * @param args the command line arguments
      */
@@ -261,7 +468,6 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField JTextFieldModelo;
     private javax.swing.JTextField JTextFieldMostrarIDVeiculo;
     private javax.swing.JButton jButtonAlterar;
     private javax.swing.JButton jButtonExcluir;
@@ -271,15 +477,16 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
     private javax.swing.JButton jButtonLocalizar;
     private javax.swing.JComboBox<String> jComboBoxIDMarca;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelMostrarImagem;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelImagemVeiculo;
     private javax.swing.JTextField jTextFieldAnoFabricacao;
     private javax.swing.JTextField jTextFieldCorVeiculo;
     private javax.swing.JTextField jTextFieldIDVeiculo;
+    private javax.swing.JTextField jTextFieldModelo;
     private javax.swing.JTextField jTextFieldNomeImagemVeiculo;
-    private javax.swing.JTextField jTextFieldOpcional;
-    private javax.swing.JTextField jTextFieldValorVeiculo;
+    private javax.swing.JTextField jTextFieldOpcionais;
+    private javax.swing.JTextField jTextFieldValor;
     // End of variables declaration//GEN-END:variables
 }

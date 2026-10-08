@@ -1,13 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package veiculoslucaserick.Controller;
 
-/**
- *
- * @author Lucas
- */
+import veiculoslucaserick.Model.AutomovelModel;
+import veiculoslucaserick.Model.AutomovelDAO;
+import veiculoslucaserick.Model.DatabaseConnection;
+
+import java.sql.SQLException;
+
 public class AutomovelController {
-    
+    public void inserirModelo(AutomovelModel modelo) throws SQLException {        
+        AutomovelDAO dao = new AutomovelDAO();
+        dao.inserirAutomovel(modelo);
+    }
 }

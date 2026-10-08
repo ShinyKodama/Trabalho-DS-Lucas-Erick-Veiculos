@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package veiculoslucaserick.Model;
 
-/**
- *
- * @author Lucas
- */
+import lombok.Data;
+
+@Data
 public class AutomovelModel {
-    
+    private int id;
+    private String modelo;
+    private float valor;
+    private int ano;
+    private String cor;
+    private String opcionais;
+    private int idMarca;
+    private byte[] imagem;
 }
