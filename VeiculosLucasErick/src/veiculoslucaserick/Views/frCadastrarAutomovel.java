@@ -11,11 +11,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 
 import veiculoslucaserick.Model.AutomovelModel;
 import veiculoslucaserick.Controller.AutomovelController;
+import veiculoslucaserick.Model.MarcaDAO;
+import veiculoslucaserick.Model.MarcaModel;
 
 public class frCadastrarAutomovel extends javax.swing.JFrame {
 
@@ -47,7 +51,6 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
         jTextFieldValor = new javax.swing.JTextField();
         jTextFieldAnoFabricacao = new javax.swing.JTextField();
         jComboBoxIDMarca = new javax.swing.JComboBox<>();
-        JTextFieldMostrarIDVeiculo = new javax.swing.JTextField();
         jTextFieldCorVeiculo = new javax.swing.JTextField();
         jTextFieldOpcionais = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -68,7 +71,6 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
             }
         });
 
-        jTextFieldIDVeiculo.setEditable(false);
         jTextFieldIDVeiculo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jTextFieldIDVeiculo.setText("ID ");
         jTextFieldIDVeiculo.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -164,21 +166,28 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
         jButtonInserirFotoVeiculo.setText("...");
         jButtonInserirFotoVeiculo.addActionListener(this::jButtonInserirFotoVeiculoActionPerformed);
 
+        jTextFieldNomeImagemVeiculo.setEditable(false);
+        jTextFieldNomeImagemVeiculo.setFocusable(false);
+
         jButtonInserir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonInserir.setText("Inserir");
         jButtonInserir.addActionListener(this::jButtonInserirActionPerformed);
 
         jButtonLimpar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonLimpar.setText("Limpar");
+        jButtonLimpar.addActionListener(this::jButtonLimparActionPerformed);
 
         jButtonLocalizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonLocalizar.setText("Localizar");
+        jButtonLocalizar.addActionListener(this::jButtonLocalizarActionPerformed);
 
         jButtonAlterar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonAlterar.setText("Alterar");
+        jButtonAlterar.addActionListener(this::jButtonAlterarActionPerformed);
 
         jButtonExcluir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonExcluir.setText("Excluir");
+        jButtonExcluir.addActionListener(this::jButtonExcluirActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -189,15 +198,12 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jTextFieldCorVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jComboBoxIDMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(JTextFieldMostrarIDVeiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 29, Short.MAX_VALUE))
+                        .addComponent(jComboBoxIDMarca, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jTextFieldIDVeiculo)
                         .addComponent(jTextFieldModelo)
                         .addComponent(jTextFieldValor, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jTextFieldAnoFabricacao, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextFieldOpcionais))
+                        .addComponent(jTextFieldOpcionais, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jButtonInserir)
@@ -236,9 +242,7 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jTextFieldModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jComboBoxIDMarca)
-                            .addComponent(JTextFieldMostrarIDVeiculo))
+                        .addComponent(jComboBoxIDMarca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextFieldValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -313,63 +317,63 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jTextFieldIDVeiculoFocusLost
     private void jTextFieldModeloFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldModeloFocusGained
-        if (jTextFieldIDVeiculo.getText().trim().equals("Modelo")) {
-            jTextFieldIDVeiculo.setText("");
-            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        if (jTextFieldModelo.getText().trim().equals("Modelo")) {
+            jTextFieldModelo.setText("");
+            jTextFieldModelo.setForeground(Color.DARK_GRAY);
         }
     }//GEN-LAST:event_jTextFieldModeloFocusGained
     private void jTextFieldModeloFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldModeloFocusLost
-        if (jTextFieldIDVeiculo.getText().isEmpty()) {
-            jTextFieldIDVeiculo.setText("Modelo");
-            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        if (jTextFieldModelo.getText().isEmpty()) {
+            jTextFieldModelo.setText("Modelo");
+            jTextFieldModelo.setForeground(Color.BLACK);
         }
     }//GEN-LAST:event_jTextFieldModeloFocusLost
     private void jTextFieldValorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldValorFocusGained
-        if (jTextFieldIDVeiculo.getText().trim().equals("Valor (R$)")) {
-            jTextFieldIDVeiculo.setText("");
-            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        if (jTextFieldValor.getText().trim().equals("Valor (R$)")) {
+            jTextFieldValor.setText("");
+            jTextFieldValor.setForeground(Color.DARK_GRAY);
         }
     }//GEN-LAST:event_jTextFieldValorFocusGained
     private void jTextFieldValorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldValorFocusLost
-        if (jTextFieldIDVeiculo.getText().isEmpty()) {
-            jTextFieldIDVeiculo.setText("Valor (R$)");
-            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        if (jTextFieldValor.getText().isEmpty()) {
+            jTextFieldValor.setText("Valor (R$)");
+            jTextFieldValor.setForeground(Color.BLACK);
         }
     }//GEN-LAST:event_jTextFieldValorFocusLost
     private void jTextFieldAnoFabricacaoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldAnoFabricacaoFocusGained
-        if (jTextFieldIDVeiculo.getText().trim().equals("Ano")) {
-            jTextFieldIDVeiculo.setText("");
-            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        if (jTextFieldAnoFabricacao.getText().trim().equals("Ano")) {
+            jTextFieldAnoFabricacao.setText("");
+            jTextFieldAnoFabricacao.setForeground(Color.DARK_GRAY);
         }
     }//GEN-LAST:event_jTextFieldAnoFabricacaoFocusGained
     private void jTextFieldAnoFabricacaoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldAnoFabricacaoFocusLost
-        if (jTextFieldIDVeiculo.getText().isEmpty()) {
-            jTextFieldIDVeiculo.setText("Ano");
-            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        if (jTextFieldAnoFabricacao.getText().isEmpty()) {
+            jTextFieldAnoFabricacao.setText("Ano");
+            jTextFieldAnoFabricacao.setForeground(Color.BLACK);
         }
     }//GEN-LAST:event_jTextFieldAnoFabricacaoFocusLost
     private void jTextFieldCorVeiculoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldCorVeiculoFocusGained
-        if (jTextFieldIDVeiculo.getText().trim().equals("Cor")) {
-            jTextFieldIDVeiculo.setText("");
-            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        if (jTextFieldCorVeiculo.getText().trim().equals("Cor")) {
+            jTextFieldCorVeiculo.setText("");
+            jTextFieldCorVeiculo.setForeground(Color.DARK_GRAY);
         }
     }//GEN-LAST:event_jTextFieldCorVeiculoFocusGained
     private void jTextFieldCorVeiculoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldCorVeiculoFocusLost
-        if (jTextFieldIDVeiculo.getText().isEmpty()) {
-            jTextFieldIDVeiculo.setText("Cor");
-            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        if (jTextFieldCorVeiculo.getText().isEmpty()) {
+            jTextFieldCorVeiculo.setText("Cor");
+            jTextFieldCorVeiculo.setForeground(Color.BLACK);
         }
     }//GEN-LAST:event_jTextFieldCorVeiculoFocusLost
     private void jTextFieldOpcionaisFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldOpcionaisFocusGained
-        if (jTextFieldIDVeiculo.getText().trim().equals("Opcionais")) {
-            jTextFieldIDVeiculo.setText("");
-            jTextFieldIDVeiculo.setForeground(Color.DARK_GRAY);
+        if (jTextFieldOpcionais.getText().trim().equals("Opcionais")) {
+            jTextFieldOpcionais.setText("");
+            jTextFieldOpcionais.setForeground(Color.DARK_GRAY);
         }
     }//GEN-LAST:event_jTextFieldOpcionaisFocusGained
     private void jTextFieldOpcionaisFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldOpcionaisFocusLost
-        if (jTextFieldIDVeiculo.getText().isEmpty()) {
-            jTextFieldIDVeiculo.setText("Opcionais");
-            jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        if (jTextFieldOpcionais.getText().isEmpty()) {
+            jTextFieldOpcionais.setText("Opcionais");
+            jTextFieldOpcionais.setForeground(Color.BLACK);
         }
     }//GEN-LAST:event_jTextFieldOpcionaisFocusLost
 
@@ -389,26 +393,33 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
             }
 
             automovel.setImagem(imagemSelecionada);
-            
-            automovel.setIdMarca(
-                Integer.parseInt(jComboBoxIDMarca.getSelectedItem().toString())
-            );
-            
+            automovel.setNomeImagem(jTextFieldNomeImagemVeiculo.getText());
+
+            MarcaModel marcaSelecionada
+                    = (MarcaModel) jComboBoxIDMarca.getSelectedItem();
+
+            if (marcaSelecionada == null) {
+                JOptionPane.showMessageDialog(this, "Selecione uma marca!");
+                return;
+            }
+
+            automovel.setIdMarca(marcaSelecionada.getIdMarca());
+
             AutomovelController controller = new AutomovelController();
             controller.inserirModelo(automovel);
 
             JOptionPane.showMessageDialog(
-                this, "Automóvel cadastrado com sucesso!"
+                    this, "Automóvel cadastrado com sucesso!"
             );
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(
-                this, "Verifique os campos numéricos!"
+                    this, "Verifique os campos numéricos!"
             );
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(
-                this, "Erro ao inserir: " + ex.getMessage()
+                    this, "Erro ao inserir: " + ex.getMessage()
             );
         }
 
@@ -425,12 +436,13 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
                 ImageIcon icon = new ImageIcon(imagemSelecionada);
 
                 Image imagem = icon.getImage().getScaledInstance(
-                    jLabelMostrarImagem.getWidth(),
-                    jLabelMostrarImagem.getHeight(),
-                    Image.SCALE_SMOOTH
+                        jLabelMostrarImagem.getWidth(),
+                        jLabelMostrarImagem.getHeight(),
+                        Image.SCALE_SMOOTH
                 );
 
                 jLabelMostrarImagem.setIcon(new ImageIcon(imagem));
+                jTextFieldNomeImagemVeiculo.setText(arquivo.getName());
 
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage());
@@ -439,8 +451,208 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonInserirFotoVeiculoActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        
+        try {
+            MarcaDAO dao = new MarcaDAO();
+
+            DefaultComboBoxModel<MarcaModel> modelo
+                    = new DefaultComboBoxModel<>();
+
+            for (MarcaModel marca : dao.listarMarcas()) {
+                modelo.addElement(marca);
+            }
+
+            jComboBoxIDMarca.setModel(modelo);
+            jComboBoxIDMarca.setSelectedIndex(-1);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao carregar marcas: " + e.getMessage());
+        }
     }//GEN-LAST:event_formWindowOpened
+
+    private void jButtonLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimparActionPerformed
+        LimparCampos();
+    }//GEN-LAST:event_jButtonLimparActionPerformed
+
+    private void jButtonLocalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLocalizarActionPerformed
+        try {
+            int id = Integer.parseInt(jTextFieldIDVeiculo.getText().trim());
+
+            AutomovelController controller = new AutomovelController();
+            AutomovelModel automovel = controller.localizarPorId(id);
+
+            if (automovel == null) {
+                JOptionPane.showMessageDialog(this, "Automóvel não encontrado!");
+                return;
+            }
+
+            jTextFieldModelo.setText(automovel.getModelo());
+            jTextFieldValor.setText(String.valueOf(automovel.getValor()));
+            jTextFieldAnoFabricacao.setText(String.valueOf(automovel.getAno()));
+            jTextFieldCorVeiculo.setText(automovel.getCor());
+            jTextFieldOpcionais.setText(automovel.getOpcionais());
+
+            jComboBoxIDMarca.setSelectedIndex(-1);
+
+            for (int i = 0; i < jComboBoxIDMarca.getItemCount(); i++) {
+                MarcaModel marca = jComboBoxIDMarca.getItemAt(i);
+
+                if (marca.getIdMarca() == automovel.getIdMarca()) {
+                    jComboBoxIDMarca.setSelectedIndex(i);
+                    break;
+                }
+            }
+
+            jTextFieldNomeImagemVeiculo.setText(
+                    automovel.getNomeImagem() == null
+                    ? ""
+                    : automovel.getNomeImagem()
+            );
+
+            imagemSelecionada = automovel.getImagem();
+
+            if (imagemSelecionada != null && imagemSelecionada.length > 0) {
+
+                ImageIcon icon = new ImageIcon(imagemSelecionada);
+
+                Image imagem = icon.getImage().getScaledInstance(
+                        jLabelMostrarImagem.getWidth(),
+                        jLabelMostrarImagem.getHeight(),
+                        Image.SCALE_SMOOTH
+                );
+
+                jLabelMostrarImagem.setIcon(new ImageIcon(imagem));
+
+            } else {
+                jLabelMostrarImagem.setIcon(null);
+            }
+
+            jTextFieldModelo.setForeground(Color.BLACK);
+            jTextFieldValor.setForeground(Color.BLACK);
+            jTextFieldAnoFabricacao.setForeground(Color.BLACK);
+            jTextFieldCorVeiculo.setForeground(Color.BLACK);
+            jTextFieldOpcionais.setForeground(Color.BLACK);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Informe um ID válido!");
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro: " + e.getMessage());
+        }
+    }//GEN-LAST:event_jButtonLocalizarActionPerformed
+
+    private void jButtonAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAlterarActionPerformed
+        try {
+            AutomovelModel automovel = new AutomovelModel();
+
+            automovel.setId(Integer.parseInt(jTextFieldIDVeiculo.getText().trim()));
+            automovel.setModelo(jTextFieldModelo.getText());
+            automovel.setValor(Float.parseFloat(jTextFieldValor.getText()));
+            automovel.setAno(Integer.parseInt(jTextFieldAnoFabricacao.getText()));
+            automovel.setCor(jTextFieldCorVeiculo.getText());
+            automovel.setOpcionais(jTextFieldOpcionais.getText());
+
+            MarcaModel marca = (MarcaModel) jComboBoxIDMarca.getSelectedItem();
+
+            if (marca == null) {
+                JOptionPane.showMessageDialog(this, "Selecione uma marca!");
+                return;
+            }
+
+            automovel.setIdMarca(marca.getIdMarca());
+            automovel.setImagem(imagemSelecionada);
+            
+            String nomeImagem = jTextFieldNomeImagemVeiculo.getText().trim();
+
+            automovel.setNomeImagem(
+                    nomeImagem.isEmpty() ? null : nomeImagem
+            );
+            AutomovelController controller = new AutomovelController();
+
+            int linhas = controller.alterarModelo(automovel);
+
+            if (linhas > 0) {
+                JOptionPane.showMessageDialog(this, "Automóvel alterado com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Nenhum registro foi alterado. Confira o ID!");
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Verifique os campos numéricos!");
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao alterar: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_jButtonAlterarActionPerformed
+    public void LimparCampos() {
+        jTextFieldIDVeiculo.setText("ID");
+        jTextFieldModelo.setText("Modelo");
+        jTextFieldValor.setText("Valor (R$)");
+        jTextFieldAnoFabricacao.setText("Ano");
+        jTextFieldCorVeiculo.setText("Cor");
+        jTextFieldOpcionais.setText("Opcionais");
+        jTextFieldIDVeiculo.setForeground(Color.BLACK);
+        jTextFieldModelo.setForeground(Color.BLACK);
+        jTextFieldValor.setForeground(Color.BLACK);
+        jTextFieldAnoFabricacao.setForeground(Color.BLACK);
+        jTextFieldCorVeiculo.setForeground(Color.BLACK);
+        jTextFieldOpcionais.setForeground(Color.BLACK);
+        jComboBoxIDMarca.setSelectedIndex(-1);
+        imagemSelecionada = null;
+        jLabelMostrarImagem.setIcon(null);
+        jTextFieldNomeImagemVeiculo.setText("");
+    }
+    private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
+        try {
+            int id = Integer.parseInt(
+                    jTextFieldIDVeiculo.getText().trim()
+            );
+
+            if (id <= 0) {
+                JOptionPane.showMessageDialog(
+                        this, "Informe um ID maior que zero!"
+                );
+                return;
+            }
+
+            int resposta = JOptionPane.showConfirmDialog(
+                    this,
+                    "Deseja realmente excluir o automóvel de ID " + id + "?",
+                    "Confirmar exclusão",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            if (resposta != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            AutomovelController controller = new AutomovelController();
+            int linhas = controller.excluirModelo(id);
+
+            if (linhas > 0) {
+                JOptionPane.showMessageDialog(
+                        this, "Automóvel excluído com sucesso!"
+                );
+
+                LimparCampos();
+            } else {
+                JOptionPane.showMessageDialog(
+                        this, "Automóvel não encontrado!"
+                );
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(
+                    this, "Informe um ID válido!"
+            );
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(
+                    this, "Erro ao excluir: " + ex.getMessage()
+            );
+        }
+    }//GEN-LAST:event_jButtonExcluirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -468,14 +680,13 @@ public class frCadastrarAutomovel extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField JTextFieldMostrarIDVeiculo;
     private javax.swing.JButton jButtonAlterar;
     private javax.swing.JButton jButtonExcluir;
     private javax.swing.JButton jButtonInserir;
     private javax.swing.JButton jButtonInserirFotoVeiculo;
     private javax.swing.JButton jButtonLimpar;
     private javax.swing.JButton jButtonLocalizar;
-    private javax.swing.JComboBox<String> jComboBoxIDMarca;
+    private javax.swing.JComboBox<MarcaModel> jComboBoxIDMarca;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelMostrarImagem;
     private javax.swing.JPanel jPanel1;

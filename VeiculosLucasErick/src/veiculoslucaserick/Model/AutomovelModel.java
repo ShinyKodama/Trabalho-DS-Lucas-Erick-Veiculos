@@ -12,4 +12,5 @@ public class AutomovelModel {
     private String opcionais;
     private int idMarca;
     private byte[] imagem;
+    private String nomeImagem;
 }

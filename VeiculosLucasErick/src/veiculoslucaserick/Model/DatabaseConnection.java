@@ -6,25 +6,34 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
+
     private static int PORT = 3307;
     private static final String USER = "root";
     private static String PASSWORD = "1234";
-    private static final String URL = "jdbc:mysql://localhost:"+String.valueOf(PORT)+"/veiculoslucaserickdatabase";
-   
-    private static String getHostName() throws Exception { return InetAddress.getLocalHost().getHostName(); }
-  
+
+    private static String getHostName() throws Exception {
+        return InetAddress.getLocalHost().getHostName();
+    }
+
     public DatabaseConnection() {
-        try {
+        /*try {
             if (getHostName().equals("DESKTOP-R2NKPHM")) {
                 this.PORT = 3306;
                 this.PASSWORD = "root";
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        };*/
     }
-    
+
     public Connection Connect() throws SQLException {
-        return DriverManager.getConnection ( this.URL, this.USER, this.PASSWORD );
+        String url = "jdbc:mysql://127.0.0.1:" + PORT
+                + "/veiculoslucaserickdatabase";
+
+        Connection conn = DriverManager.getConnection(url, USER, PASSWORD);
+
+        System.out.println("MySQL conectado com sucesso!");
+
+        return conn;
     }
 }
